@@ -1,0 +1,13 @@
+﻿<Window x:Class="IVDClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IVDClient"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="540" Width="960">
+    <Grid>
+        <DataGrid x:Name="VehiclesDataGrid" IsSynchronizedWithCurrentItem="True" AutoGenerateColumns="True" AutoGeneratingColumn="OnAutoGeneratingColumn" GridLinesVisibility="Horizontal" SelectionMode="Single" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" IsReadOnly="True" MouseDoubleClick="VehiclesDataGrid_MouseDoubleClick">
+        </DataGrid>
+    </Grid>
+</Window>
