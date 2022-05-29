@@ -728,11 +728,11 @@ function data()
                     stations = stations
                 }
 
-                local ivdFile= io.open("ivdCurrentState_"..tostring(lastJSONFileCounter)..".json","w")
-                ivdFile:write(json.encode(currentState))
-                ivdFile:close()
+                local ivsdFile= io.open("ivsdCurrentState_"..tostring(lastJSONFileCounter)..".json","w")
+                ivsdFile:write(json.encode(currentState))
+                ivsdFile:close()
 
-                print("IVD updated current state of engine")
+                print("IVSD updated current state of engine")
                 lastRanCounter = 0
                 lastJSONFileCounter = lastJSONFileCounter + 1
                 if lastJSONFileCounter > 9 then

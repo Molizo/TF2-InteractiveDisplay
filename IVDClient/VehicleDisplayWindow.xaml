@@ -1,9 +1,9 @@
-﻿<Window x:Class="IVDClient.VehicleDisplayWindow"
+﻿<Window x:Class="IVSDClient.VehicleDisplayWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:IVDClient"
+        xmlns:local="clr-namespace:IVSDClient"
         mc:Ignorable="d"
         Title="Vehicle display" MouseDoubleClick="Window_MouseDoubleClick">
     <Viewbox Stretch="Uniform">
@@ -19,7 +19,7 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Label x:Name="LineNameLabel" Content="Depot" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="White" FontSize="50" Padding="25,3,25,5" Background="#FF0000FF" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontWeight="Bold" />
-                <Grid Grid.Column="1" HorizontalAlignment="Stretch" x:Name="NextStopGrid" Background="#FFD4D4D4">
+                <Grid Grid.Column="1" HorizontalAlignment="Stretch" x:Name="NextStopGrid" Background="LightGray">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -82,7 +82,6 @@
                 -->
             </Grid>
             <local:NextStationControl x:Name="EndStationControl" Grid.Row="2" VerticalAlignment="Bottom" Background="#FFD4D4D4" />
-            <WrapPanel Grid.Row="1" />
         </Grid>
     </Viewbox>
 </Window>

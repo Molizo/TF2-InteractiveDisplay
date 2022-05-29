@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="IVDClient.NextStationTiltedTextControl"
+﻿<UserControl x:Class="IVSDClient.NextStationTiltedTextControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:IVDClient"
+             xmlns:local="clr-namespace:IVSDClient"
              mc:Ignorable="d">
     <TextBlock x:Name="NextStopTextBlock" Grid.Row="0" Height="60"  RenderTransformOrigin="0,1" Text="Test station" FontSize="32" VerticalAlignment="Bottom" HorizontalAlignment="Left" ScrollViewer.VerticalScrollBarVisibility="Disabled" Visibility="Visible" Margin="15,0,0,10">
         <TextBlock.RenderTransform>

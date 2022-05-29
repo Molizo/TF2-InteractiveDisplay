@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace IVDClient
+namespace IVSDClient
 {
     /// <summary>
     /// Interaction logic for NextStationTiltedTextControl.xaml

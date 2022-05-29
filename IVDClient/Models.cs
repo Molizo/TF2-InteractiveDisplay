@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 
-namespace IVDClient.Models
+namespace IVSDClient.Models
 {
-    public class IVDServerCurrentState
+    public class IVSDServerCurrentState
     {
         public List<Vehicle> vehicles { get; set; }
         public List<Station> stations { get; set; }
@@ -70,7 +70,7 @@ namespace IVDClient.Models
         [DisplayName("Vehicle ID")]
         [Description("Vehicle ID")]
         [DefaultValue(30)]
-        internal int id { get; set; }
+        internal int id { get; set; } //Internal so it doesn't show up in the columns in the DataGrid
 
         [DisplayName("Vehicle name")]
         [Description("Vehicle name")]
@@ -86,5 +86,18 @@ namespace IVDClient.Models
         [Description("Line name")]
         [DefaultValue("")]
         public string lineName { get; set; }
+    }
+
+    public class HomePageDataGridStation
+    {
+        [DisplayName("Station ID")]
+        [Description("Station ID")]
+        [DefaultValue(30)]
+        internal int id { get; set; } //Internal so it doesn't show up in the columns in the DataGrid
+
+        [DisplayName("Station name")]
+        [Description("Station name")]
+        [DefaultValue("")]
+        public string name { get; set; }
     }
 }

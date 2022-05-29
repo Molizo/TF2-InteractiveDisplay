@@ -1,13 +1,39 @@
-﻿<Window x:Class="IVDClient.MainWindow"
+﻿<Window x:Class="IVSDClient.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:IVDClient"
+        xmlns:local="clr-namespace:IVSDClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="540" Width="960">
+        Title="TF2 Interactive Vehicle and Station Display Client" Height="540" Width="960">
     <Grid>
-        <DataGrid x:Name="VehiclesDataGrid" IsSynchronizedWithCurrentItem="True" AutoGenerateColumns="True" AutoGeneratingColumn="OnAutoGeneratingColumn" GridLinesVisibility="Horizontal" SelectionMode="Single" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" IsReadOnly="True" MouseDoubleClick="VehiclesDataGrid_MouseDoubleClick">
-        </DataGrid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Content="Welcome to IVSD Client" FontSize="24px"/>
+            <Label Grid.Row="1" Grid.Column="0" Content="To get started, select your game folder and a vehicle" FontSize="16px"/>
+            <Button x:Name="SelectGameFolderButton" Grid.Row="0" Grid.Column="1" Content="Select game folder" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,0,1" FontSize="16" Padding="5,5,5,5" Click="SelectGameFolderButton_Click"></Button>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <DataGrid x:Name="VehiclesDataGrid" IsSynchronizedWithCurrentItem="True" AutoGenerateColumns="True" AutoGeneratingColumn="OnAutoGeneratingColumn" GridLinesVisibility="Horizontal" SelectionMode="Single" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" IsReadOnly="True" MouseDoubleClick="VehiclesDataGrid_MouseDoubleClick">
+            </DataGrid>
+            <DataGrid x:Name="StationsDataGrid" Grid.Column="1" IsSynchronizedWithCurrentItem="True" AutoGenerateColumns="True" AutoGeneratingColumn="OnAutoGeneratingColumn" GridLinesVisibility="Horizontal" SelectionMode="Single" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" IsReadOnly="True" MouseDoubleClick="StationsDataGrid_MouseDoubleClick">
+            </DataGrid>
+            
+        </Grid>
     </Grid>
 </Window>
