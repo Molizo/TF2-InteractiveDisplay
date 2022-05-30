@@ -1,0 +1,88 @@
+﻿<UserControl x:Class="IVSDClient.VehicleDisplayControl"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IVSDClient"
+        mc:Ignorable="d">
+    <Viewbox Stretch="Uniform">
+        <Border BorderThickness="1" BorderBrush="DarkGray">
+            <Grid Height="540" Width="960">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="4*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Label x:Name="LineNameLabel" Content="Depot" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="White" FontSize="50" Padding="25,3,25,5" Background="#FF0000FF" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontWeight="Bold" />
+                    <Grid Grid.Column="1" HorizontalAlignment="Stretch" x:Name="NextStopGrid" Background="LightGray">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label x:Name="NextStopLabel" Content="Next up Test Station" HorizontalAlignment="Stretch" VerticalAlignment="Top"  HorizontalContentAlignment="Right" VerticalContentAlignment="Top" Padding="25,5,25,0" FontSize="32" FontWeight="Normal" />
+                        <Label x:Name="NextStopConnectionsLabel" Content="No connections are available" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom" Padding="25,5,25,5" FontSize="20" Grid.Row="1" />
+                    </Grid>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="35" />
+                        <RowDefinition Height="15" />
+                    </Grid.RowDefinitions>
+                    <StackPanel x:Name="NextStationsStackPanel" Margin="-10,0,0,-20">
+                        <StackPanel.LayoutTransform>
+                            <RotateTransform Angle="-90" />
+                        </StackPanel.LayoutTransform>
+                        <local:NextStationTiltedTextControl />
+                        <local:NextStationTiltedTextControl />
+                        <local:NextStationTiltedTextControl />
+                        <local:NextStationTiltedTextControl />
+                        <local:NextStationTiltedTextControl />
+                        <local:NextStationTiltedTextControl />
+                        <local:NextStationTiltedTextControl />
+                        <local:NextStationTiltedTextControl />
+                        <local:NextStationTiltedTextControl />
+                        <local:NextStationTiltedTextControl />
+                        <local:NextStationTiltedTextControl />
+                        <local:NextStationTiltedTextControl />
+                    </StackPanel>
+                    <StackPanel x:Name="NextStationsDimplesStackPanel" Grid.Row="1" Orientation="Horizontal">
+                        <StackPanel.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="White" />
+                                <GradientStop Color="White" Offset="0.2" />
+                                <GradientStop Color="Blue" Offset="0.2" />
+                                <GradientStop Color="Blue" Offset="0.8" />
+                                <GradientStop Color="White" Offset="0.8" />
+                                <GradientStop Color="White" Offset="1" />
+                            </LinearGradientBrush>
+                        </StackPanel.Background>
+                        <local:NextStationDimplesControl />
+                        <local:NextStationDimplesControl />
+                        <local:NextStationDimplesControl />
+                        <local:NextStationDimplesControl />
+                        <local:NextStationDimplesControl />
+                        <local:NextStationDimplesControl />
+                        <local:NextStationDimplesControl />
+                        <local:NextStationDimplesControl />
+                        <local:NextStationDimplesControl />
+                        <local:NextStationDimplesControl />
+                        <local:NextStationDimplesControl />
+                        <local:NextStationDimplesControl />
+                    </StackPanel>
+                    <!--
+                    <StackPanel x:Name="NextStationsStackPanel">
+                        <local:NextStationControl />
+                    </StackPanel>
+                    -->
+                </Grid>
+                <local:NextStationControl x:Name="EndStationControl" Grid.Row="2" VerticalAlignment="Bottom" Background="#FFD4D4D4" />
+            </Grid>
+        </Border>
+    </Viewbox>
+</UserControl>

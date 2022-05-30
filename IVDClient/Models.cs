@@ -69,35 +69,61 @@ namespace IVSDClient.Models
     {
         [DisplayName("Vehicle ID")]
         [Description("Vehicle ID")]
+        [ReadOnly(true)]
         [DefaultValue(30)]
         internal int id { get; set; } //Internal so it doesn't show up in the columns in the DataGrid
 
+        [DisplayName("Select")]
+        [Description("Select")]
+        [ReadOnly(false)]
+        [DefaultValue(false)]
+        public bool isSelected { get; set; } //For selection checkboxes in the DataGrid
+
         [DisplayName("Vehicle name")]
         [Description("Vehicle name")]
+        [ReadOnly(true)]
         [DefaultValue("")]
         public string name { get; set; }
 
         [DisplayName("Line ID")]
         [Description("Line ID")]
+        [ReadOnly(true)]
         [DefaultValue(30)]
         internal int lineID { get; set; }
 
-        [DisplayName("Line name")]
-        [Description("Line name")]
+        [DisplayName("Line")]
+        [Description("Line")]
+        [ReadOnly(true)]
         [DefaultValue("")]
         public string lineName { get; set; }
+
+        
     }
 
     public class HomePageDataGridStation
     {
         [DisplayName("Station ID")]
         [Description("Station ID")]
+        [ReadOnly(true)]
         [DefaultValue(30)]
         internal int id { get; set; } //Internal so it doesn't show up in the columns in the DataGrid
 
+        [DisplayName("Select")]
+        [Description("Select")]
+        [ReadOnly(false)]
+        [DefaultValue(false)]
+        public bool isSelected { get; set; } //For selection checkboxes in the DataGrid
+        
         [DisplayName("Station name")]
         [Description("Station name")]
+        [ReadOnly(true)]
         [DefaultValue("")]
         public string name { get; set; }
+        
+        [DisplayName("Available lines")]
+        [Description("Available lines")]
+        [ReadOnly(true)]
+        [DefaultValue("")]
+        public string lineNames { get; set; }        
     }
 }

@@ -55,7 +55,7 @@ namespace IVSDClient
         {
             using (var fileStream = new FileStream(lastJSONFilePath, FileMode.Open, FileAccess.Read))
                 cs = JsonSerializer.Deserialize<IVSDServerCurrentState>(fileStream);
-            IVSDCurrentStateJSONWatcher.EnableRaisingEvents = false; //We're making it so it only imports the data once to improve performance
+            IVSDCurrentStateJSONWatcher.EnableRaisingEvents = false; //We're making it so it only imports the data once to improve performance, while still avoiding file access conflicts
         }
 
         private void UpdateUI()
@@ -68,18 +68,16 @@ namespace IVSDClient
         {
             var vehicles = new List<HomePageDataGridVehicle>();
 
-            foreach (var vehicle in cs.vehicles)
+            foreach (var vehicle in cs.vehicles.Where(v=>v.line!=-1)) //Making sure it's not in a depot
             {
                 var v = new HomePageDataGridVehicle()
                 {
+                    isSelected = false,
                     id = vehicle.id,
                     name = vehicle.name,
-                    lineID = vehicle.line
+                    lineID = vehicle.line,
+                    lineName = cs.lines.FirstOrDefault(l => l.id == vehicle.line).name
                 };
-                if (v.lineID != -1) //Making sure it's not a depot
-                    v.lineName = cs.lines.FirstOrDefault(l => l.id == vehicle.line).name;
-                else
-                    v.lineName = "DEPOT";
                 vehicles.Add(v);
             }
 
@@ -94,8 +92,16 @@ namespace IVSDClient
             {
                 var s = new HomePageDataGridStation()
                 {
+                    isSelected = false,
                     id = station.id,
                     name = station.name,
+                    lineNames = String.Join(", ",cs.lines
+                        .Where(l => l.stops.Contains(station.id) || 
+                                    l.stops.Contains(station.stationGroup))
+                        .Select(l => l.name)
+                        .OrderBy(c => c.Length)
+                        .ThenBy(c => c)
+                    )
                 };
                 stations.Add(s);
             }
@@ -103,21 +109,21 @@ namespace IVSDClient
             return stations.OrderBy(c => c.name).ToList();
         }
 
-        private void VehiclesDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void OpenWindowsButton_Click(object sender, RoutedEventArgs e)
         {
-            var selectedVehicle = (HomePageDataGridVehicle)VehiclesDataGrid.SelectedItem;
-            if (selectedVehicle.lineID != -1) //Making sure it's not a depot
-            {
-                var vdw = new VehicleDisplayWindow(selectedVehicle.id);
-                vdw.Show();
-            }
-        }
+            var selectedVehicles = VehiclesDataGrid.Items
+                .Cast<HomePageDataGridVehicle>()
+                .Where(v => v.isSelected)
+                .Select(v=>v.id)
+                .ToList();
+            var selectedStations  = StationsDataGrid.Items
+                .Cast<HomePageDataGridStation>()
+                .Where(s => s.isSelected)
+                .Select(s=>s.id)
+                .ToList();
 
-        private void StationsDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            var selectedStation = (HomePageDataGridStation)StationsDataGrid.SelectedItem;
-            var sdw = new StationDisplayWindow(selectedStation.id);
-            sdw.Show();
+            var dw = new DisplayWindow(IVSDCurrentStateJSONWatcher.Path,selectedVehicles, selectedStations);
+            dw.Show();
         }
 
         // This is so the columns get their name from the model attributes

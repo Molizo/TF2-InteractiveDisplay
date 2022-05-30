@@ -21,17 +21,18 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Label Grid.Row="0" Grid.Column="0" Content="Welcome to IVSD Client" FontSize="24px"/>
-            <Label Grid.Row="1" Grid.Column="0" Content="To get started, select your game folder and a vehicle" FontSize="16px"/>
+            <Label Grid.Row="1" Grid.Column="0" Content="To get started, select your game folder and a couple vehicles and stations" FontSize="16px"/>
             <Button x:Name="SelectGameFolderButton" Grid.Row="0" Grid.Column="1" Content="Select game folder" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,0,1" FontSize="16" Padding="5,5,5,5" Click="SelectGameFolderButton_Click"></Button>
+            <Button x:Name="OpenWindowsButton" Grid.Row="1" Grid.Column="1" Content="Open displays for selected vehicles and stations" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,0,0" FontSize="16" Padding="5,5,5,5" Click="OpenWindowsButton_Click"/>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <DataGrid x:Name="VehiclesDataGrid" IsSynchronizedWithCurrentItem="True" AutoGenerateColumns="True" AutoGeneratingColumn="OnAutoGeneratingColumn" GridLinesVisibility="Horizontal" SelectionMode="Single" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" IsReadOnly="True" MouseDoubleClick="VehiclesDataGrid_MouseDoubleClick">
+            <DataGrid x:Name="VehiclesDataGrid" AutoGenerateColumns="True" AutoGeneratingColumn="OnAutoGeneratingColumn" GridLinesVisibility="Horizontal" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" AlternatingRowBackground="LightGray" SelectionMode="Single" RowDetailsVisibilityMode="Collapsed">
             </DataGrid>
-            <DataGrid x:Name="StationsDataGrid" Grid.Column="1" IsSynchronizedWithCurrentItem="True" AutoGenerateColumns="True" AutoGeneratingColumn="OnAutoGeneratingColumn" GridLinesVisibility="Horizontal" SelectionMode="Single" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" IsReadOnly="True" MouseDoubleClick="StationsDataGrid_MouseDoubleClick">
+            <DataGrid x:Name="StationsDataGrid" Grid.Column="1" AutoGenerateColumns="True" AutoGeneratingColumn="OnAutoGeneratingColumn" GridLinesVisibility="Horizontal" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" AlternatingRowBackground="LightGray" SelectionMode="Single" RowDetailsVisibilityMode="Collapsed">
             </DataGrid>
             
         </Grid>

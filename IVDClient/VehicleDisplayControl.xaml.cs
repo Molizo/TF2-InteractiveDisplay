@@ -7,17 +7,18 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace IVSDClient
 {
     /// <summary>
-    /// Interaction logic for VehicleDisplayWindow.xaml
+    /// Interaction logic for VehicleDisplayControl.xaml
     /// </summary>
-    public partial class VehicleDisplayWindow : Window
+    public partial class VehicleDisplayControl : UserControl
     {
-        public int MonitoredVehicleID = 0;
+        public int MonitoredVehicleID = -1;
         public IVSDServerCurrentState cs;
         public Vehicle monitoredVehicle = new Vehicle();
         public Line monitoredLine = new Line();
@@ -25,32 +26,32 @@ namespace IVSDClient
 
         private FileSystemWatcher IVSDCurrentStateJSONWatcher;
         private string lastJSONFilePath = "";
-        private bool isMaximized = false;
 
-        public VehicleDisplayWindow()
+        public VehicleDisplayControl()
         {
             InitializeComponent();
 
-            IVSDCurrentStateJSONWatcher = new FileSystemWatcher(@"C:\Games\Transport Fever 2");
+            IVSDCurrentStateJSONWatcher = new FileSystemWatcher();
             IVSDCurrentStateJSONWatcher.NotifyFilter = NotifyFilters.LastWrite;
             IVSDCurrentStateJSONWatcher.Filter = "*.json";
             IVSDCurrentStateJSONWatcher.IncludeSubdirectories = true;
             IVSDCurrentStateJSONWatcher.Changed += new FileSystemEventHandler(OnIVSDCurrentStateJSONChanged);
-            IVSDCurrentStateJSONWatcher.EnableRaisingEvents = true;
 
             //ProcessUpdatedJSON(@"C:\Games\Transport Fever 2\IVSDCurrentState_0.json");
             //UpdateUI();
         }
 
-        public VehicleDisplayWindow(int vehicleID) : this()
+        public VehicleDisplayControl(string watchFolder,int vehicleID) : this()
         {
             MonitoredVehicleID = vehicleID;
+            IVSDCurrentStateJSONWatcher.Path = watchFolder;
+            IVSDCurrentStateJSONWatcher.EnableRaisingEvents = true; 
         }
 
         private void OnIVSDCurrentStateJSONChanged(object sender, FileSystemEventArgs e)
         {
             Console.WriteLine($"Changed: {e.FullPath}");
-            if (lastJSONFilePath != "")
+            if (lastJSONFilePath != "" && MonitoredVehicleID != -1)
             {
                 ProcessUpdatedJSON(lastJSONFilePath);
                 this.Dispatcher.BeginInvoke(() => { UpdateUI(); });
@@ -79,11 +80,10 @@ namespace IVSDClient
             {
                 Console.WriteLine(e.Message);
             }
-        }
+    }
 
         private void UpdateUI()
         {
-            this.Title = "Vehicle display - " + monitoredVehicle.name;
             LineNameLabel.Content = monitoredLine.name;
 
             NextStopLabel.Content = upcomingStations[monitoredVehicle.stopIndex].name;
@@ -143,21 +143,6 @@ namespace IVSDClient
             if (text == "Change for ")
                 text = "No connections are available";
             return text;
-        }
-
-        private void Window_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (isMaximized)
-            {
-                this.WindowState = WindowState.Normal;
-                this.WindowStyle = WindowStyle.SingleBorderWindow;
-            }
-            else
-            {
-                this.WindowState = WindowState.Maximized;
-                this.WindowStyle = WindowStyle.None;
-            }
-            isMaximized = !isMaximized;
         }
     }
 }

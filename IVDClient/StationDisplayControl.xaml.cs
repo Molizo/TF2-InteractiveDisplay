@@ -7,49 +7,50 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace IVSDClient
 {
     /// <summary>
-    /// Interaction logic for StationDisplayWindow.xaml
+    /// Interaction logic for StationDisplayControl.xaml
     /// </summary>
-    public partial class StationDisplayWindow : Window
+    public partial class StationDisplayControl : UserControl
     {
-        public int MonitoredStationID = 0;
+        public int MonitoredStationID = -1;
         public IVSDServerCurrentState cs;
         public Station monitoredStation = new Station();
         public List<Vehicle> nextArrivingVehicles = new List<Vehicle>();
 
         private FileSystemWatcher IVSDCurrentStateJSONWatcher;
         private string lastJSONFilePath = "";
-        private bool isMaximized = false;
 
-        public StationDisplayWindow()
+        public StationDisplayControl()
         {
             InitializeComponent();
 
-            IVSDCurrentStateJSONWatcher = new FileSystemWatcher(@"C:\Games\Transport Fever 2");
+            IVSDCurrentStateJSONWatcher = new FileSystemWatcher();
             IVSDCurrentStateJSONWatcher.NotifyFilter = NotifyFilters.LastWrite;
             IVSDCurrentStateJSONWatcher.Filter = "*.json";
             IVSDCurrentStateJSONWatcher.IncludeSubdirectories = true;
             IVSDCurrentStateJSONWatcher.Changed += new FileSystemEventHandler(OnIVSDCurrentStateJSONChanged);
-            IVSDCurrentStateJSONWatcher.EnableRaisingEvents = true;
 
             //ProcessUpdatedJSON(@"C:\Games\Transport Fever 2\IVSDCurrentState_0.json");
             //UpdateUI();
         }
 
-        public StationDisplayWindow(int stationID) : this()
+        public StationDisplayControl(string watchFolder, int stationID) : this()
         {
             MonitoredStationID = stationID;
+            IVSDCurrentStateJSONWatcher.Path = watchFolder;
+            IVSDCurrentStateJSONWatcher.EnableRaisingEvents = true;            
         }
 
         private void OnIVSDCurrentStateJSONChanged(object sender, FileSystemEventArgs e)
         {
             Console.WriteLine($"Changed: {e.FullPath}");
-            if (lastJSONFilePath != "")
+            if (lastJSONFilePath != "" && MonitoredStationID != -1)
             {
                 ProcessUpdatedJSON(lastJSONFilePath);
                 this.Dispatcher.BeginInvoke(() => { UpdateUI(); });
@@ -65,20 +66,25 @@ namespace IVSDClient
                     cs = JsonSerializer.Deserialize<IVSDServerCurrentState>(fileStream);
 
                 monitoredStation = cs.stations.FirstOrDefault(v => v.id == MonitoredStationID);
-                
+
                 nextArrivingVehicles = new List<Vehicle>();
-                foreach (var vehicle in cs.vehicles.Where(v => v.line != -1)) //Using custom foreach to not calculate the line twice as is the case if we use LINQ
+                foreach (var vehicle in
+                         cs.vehicles.Where(v =>
+                             v.line !=
+                             -1)) //Using custom foreach to not calculate the line twice as is the case if we use LINQ
                 {
                     var line = cs.lines.FirstOrDefault(l => l.id == vehicle.line);
-                    if (line.stops[vehicle.stopIndex] == monitoredStation.id || line.stops[vehicle.stopIndex] == monitoredStation.stationGroup)
+                    if (line.stops[vehicle.stopIndex] == monitoredStation.id ||
+                        line.stops[vehicle.stopIndex] == monitoredStation.stationGroup)
                         nextArrivingVehicles.Add(vehicle);
                 }
 
                 nextArrivingVehicles = nextArrivingVehicles
                     .OrderBy(v => Calculate3DDistance(v.position[0], v.position[1], v.position[2],
                         monitoredStation.position[0], monitoredStation.position[1], monitoredStation.position[2]))
-                    .Take(8) //Can be changed if more arrivals are desired to appear on-screen
-                    .OrderBy(v=>v.state != "AT_TERMINAL") //This is so that trains that are in the station are at the top of the list
+                    .ThenBy(v =>
+                        v.state !=
+                        "AT_TERMINAL") //This is so that trains that are in the station are at the top of the list
                     .ToList();
             }
             catch (Exception e)
@@ -89,7 +95,6 @@ namespace IVSDClient
 
         private void UpdateUI()
         {
-            this.Title = "Station display - " + monitoredStation.name;
             StationNameLabel.Content = monitoredStation.name;
             
             NextArrivalsWrapPanel.Children.Clear();
@@ -115,20 +120,6 @@ namespace IVSDClient
         {
             return Math.Sqrt(Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2) + Math.Pow(z2 - z1, 2));
         }
-
-        private void Window_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (isMaximized)
-            {
-                this.WindowState = WindowState.Normal;
-                this.WindowStyle = WindowStyle.SingleBorderWindow;
-            }
-            else
-            {
-                this.WindowState = WindowState.Maximized;
-                this.WindowStyle = WindowStyle.None;
-            }
-            isMaximized = !isMaximized;
-        }
+        
     }
 }
