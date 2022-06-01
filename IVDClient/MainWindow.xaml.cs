@@ -70,16 +70,19 @@ namespace IVSDClient
         {
             var vehicles = new List<HomePageDataGridVehicle>();
 
-            foreach (var vehicle in cs.vehicles.Where(v=>v.line!=-1)) //Making sure it's not in a depot
+            foreach (var vehicle in cs.vehicles)
             {
                 var v = new HomePageDataGridVehicle()
                 {
                     isSelected = false,
                     id = vehicle.id,
                     name = vehicle.name,
-                    lineID = vehicle.line,
-                    lineName = cs.lines.FirstOrDefault(l => l.id == vehicle.line).name
+                    lineID = vehicle.line
                 };
+                if (v.lineID != -1) //If the vehicle is on an actual line
+                    v.lineName = cs.lines.FirstOrDefault(x => x.id == vehicle.line).name;
+                else //If the vehicle is in a depot
+                    v.lineName = "Depot";
                 vehicles.Add(v);
             }
 

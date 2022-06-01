@@ -42,16 +42,22 @@ namespace IVSDClient
             try
             {
                 monitoredVehicle = cs.vehicles.FirstOrDefault(v => v.id == MonitoredVehicleID);
-                monitoredLine = cs.lines.FirstOrDefault(l => l.id == monitoredVehicle.line);
-
-                upcomingStations = new List<Station>();
-                foreach (int stopID in monitoredLine.stops) //Using a foreach to account for the order of the stops
+                if (monitoredVehicle != null)
                 {
-                    var station = cs.stations.First(s => s.stationGroup == stopID || s.id == stopID);
-                    upcomingStations.Add(station);
-                }
+                    if (monitoredVehicle.line != -1)
+                    {
+                        monitoredLine = cs.lines.FirstOrDefault(l => l.id == monitoredVehicle.line);
+
+                        upcomingStations = new List<Station>();
+                        foreach (int stopID in monitoredLine.stops) //Using a foreach to account for the order of the stops
+                        {
+                            var station = cs.stations.First(s => s.stationGroup == stopID || s.id == stopID);
+                            upcomingStations.Add(station);
+                        }
+                    }
                 
-                this.Dispatcher.BeginInvoke(() => { UpdateUI(); });     
+                    this.Dispatcher.BeginInvoke(() => { UpdateUI(); });   
+                }
             }
             catch (Exception e)
             {
@@ -61,28 +67,56 @@ namespace IVSDClient
 
         private void UpdateUI()
         {
-            LineNameLabel.Content = monitoredLine.name;
-
-            NextStopLabel.Content = upcomingStations[monitoredVehicle.stopIndex].name;
-            NextStopConnectionsLabel.Content = GenerateConnectionText(monitoredVehicle.stopIndex);
-            var bc = new BrushConverter();
-            if (monitoredVehicle.state == "AT_TERMINAL")
-            {
-                NextStopLabel.Content = "This is " + NextStopLabel.Content;
-                NextStopGrid.Background = Brushes.LightGreen;
-                //NextStopLabel.Foreground = Brushes.White;
-            }
-            else
-            {
-                NextStopLabel.Content = "Next up " + NextStopLabel.Content;
-                NextStopGrid.Background = Brushes.LightGray;
-                //NextStopLabel.Foreground = Brushes.Black;
+            int endStopIndex = monitoredVehicle.stopIndex <= upcomingStations.Count / 2 - 1 ? upcomingStations.Count / 2 - 1 : upcomingStations.Count - 1; //Split each line into having two ends for more realism
+            
+            switch(monitoredVehicle.state){
+                case "GOING_TO_DEPOT":
+                    LineNameLabel.Content = "Out of service";
+                    NextStopLabel.Content = "Going to Depot";
+                    NextStopConnectionsLabel.Content = "No connections are available";
+                    NextStopGrid.Background = Brushes.LightGray;
+                    NextStationsStackPanel.Children.Clear();
+                    NextStationsDimplesStackPanel.Children.Clear();
+                    EndStationControl.SetUIText("Depot", "No connections are available");
+                    break;
+                case "IN_DEPOT":
+                    LineNameLabel.Content = "Out of service";
+                    NextStopLabel.Content = "In Depot";
+                    NextStopConnectionsLabel.Content = "No connections are available";
+                    NextStopGrid.Background = Brushes.IndianRed;
+                    NextStationsStackPanel.Children.Clear();
+                    NextStationsDimplesStackPanel.Children.Clear();
+                    EndStationControl.SetUIText("", "");
+                    break;
+                case "AT_TERMINAL":
+                    LineNameLabel.Content = monitoredLine.name;
+                    NextStopLabel.Content = "This is " + upcomingStations[monitoredVehicle.stopIndex].name;
+                    NextStopConnectionsLabel.Content = GenerateConnectionText(monitoredVehicle.stopIndex);
+                    NextStopGrid.Background = Brushes.LightGreen;
+                    GenerateNextStationsGraphics(endStopIndex);
+                    EndStationControl.SetUIText("Last stop at " + upcomingStations[endStopIndex].name, GenerateConnectionText(endStopIndex));
+                    break;
+                default:
+                    LineNameLabel.Content = monitoredLine.name;
+                    NextStopLabel.Content = "Next up " + upcomingStations[monitoredVehicle.stopIndex].name;
+                    NextStopConnectionsLabel.Content = GenerateConnectionText(monitoredVehicle.stopIndex);
+                    NextStopGrid.Background = Brushes.LightGray;
+                    GenerateNextStationsGraphics(endStopIndex);
+                    EndStationControl.SetUIText("Last stop at " + upcomingStations[endStopIndex].name, GenerateConnectionText(endStopIndex));
+                    break;
             }
             //NextStopConnectionsLabel.Foreground = NextStopLabel.Foreground;
+            
+        }
 
+        private void GenerateNextStationsGraphics()
+        {
             int endStopIndex = monitoredVehicle.stopIndex <= upcomingStations.Count / 2 - 1 ? upcomingStations.Count / 2 - 1 : upcomingStations.Count - 1; //Split each line into having two ends for more realism
-            EndStationControl.SetUIText("Last stop at " + upcomingStations[endStopIndex].name, GenerateConnectionText(endStopIndex));
-
+            GenerateNextStationsGraphics(endStopIndex);
+        }
+        
+        private void GenerateNextStationsGraphics(int endStopIndex)
+        {
             NextStationsStackPanel.Children.Clear();
             NextStationsDimplesStackPanel.Children.Clear();
             for (int i = monitoredVehicle.stopIndex; i <= endStopIndex && NextStationsStackPanel.Children.Count < 12; i++)
@@ -92,15 +126,6 @@ namespace IVSDClient
                 var nextStationDimplesControl = new NextStationDimplesControl();
                 NextStationsDimplesStackPanel.Children.Add(nextStationDimplesControl);
             }
-
-            /*
-            NextStationsStackPanel.Children.Clear();
-            for (int i = monitoredVehicle.stopIndex + 1; i <= endStopIndex && NextStationsStackPanel.Children.Count < 4; i++)
-            {
-                var nextStationControl = new NextStationControl(upcomingStations[i].name, GenerateConnectionText(i));
-                NextStationsStackPanel.Children.Add(nextStationControl);
-            }
-            */
         }
 
         private double Calculate3DDistance(double x1, double y1, double z1, double x2, double y2, double z2)
